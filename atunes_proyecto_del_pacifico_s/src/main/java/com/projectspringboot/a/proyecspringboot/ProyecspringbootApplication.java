@@ -1,4 +1,4 @@
-package com.atunes_proyecto_del_pacifico_s.a.proyecspringboot;
+package com.projectspringboot.a.proyecspringboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
