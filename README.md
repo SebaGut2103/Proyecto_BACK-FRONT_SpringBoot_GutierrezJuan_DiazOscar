@@ -36,7 +36,15 @@ El backend está construido con **Spring Boot** y sigue las mejores prácticas d
 ## 🚀 Puesta en Marcha
 
 
+
+## Diagrama Base de Datos
+
+#### Hecha con DBeaver
+
+
 ![Diagrama Base de Datos](https://github.com/SebaGut2103/Proyecto_BACK-FRONT_SpringBoot_GutierrezJuan_DiazOscar/blob/main/img/DiagramaBaseDeDatos.png)
+
+
 
 
 Sigue estos pasos para configurar y ejecutar el entorno de desarrollo del backend.
