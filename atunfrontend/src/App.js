@@ -27,7 +27,7 @@ function App() {
           <p className="text-lg">
             La mejor calidad en atún del Pacífico, directo a tu mesa.
           </p>
-        </div>
+        </div> 
       </section>
     </div>
   );
