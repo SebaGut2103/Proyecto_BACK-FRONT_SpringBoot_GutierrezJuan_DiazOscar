@@ -5,7 +5,7 @@ package com.projectspringboot.a.proyecspringboot.controller;
 // ... (importaciones necesarias: AuthenticationManager, JwtService, etc.)
 import com.projectspringboot.a.proyecspringboot.dto.AuthRequestDTO;
 import com.projectspringboot.a.proyecspringboot.dto.AuthResponseDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
