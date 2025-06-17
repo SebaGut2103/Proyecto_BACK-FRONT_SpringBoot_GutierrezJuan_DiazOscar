@@ -1,0 +1,53 @@
+package com.projectspringboot.a.proyecspringboot.controller;
+
+
+
+import com.projectspringboot.a.proyecspringboot.dto.LoteProduccionRequestDTO;
+import com.projectspringboot.a.proyecspringboot.dto.LoteProduccionResponseDTO;
+import com.projectspringboot.a.proyecspringboot.service.LoteProduccionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/lotes")
+@CrossOrigin
+public class LoteProduccionController {
+
+    @Autowired
+    private LoteProduccionService loteProduccionService;
+
+    /**
+     * Endpoint para registrar un nuevo lote de producción.
+     */
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    public ResponseEntity<LoteProduccionResponseDTO> registrarLote(@RequestBody LoteProduccionRequestDTO loteRequest) {
+        LoteProduccionResponseDTO nuevoLote = loteProduccionService.registrarLote(loteRequest);
+        return new ResponseEntity<>(nuevoLote, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint para obtener una lista de todo el inventario/lotes.
+     * Accesible también por clientes para ver productos disponibles.
+     */
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR', 'CLIENTE')")
+    public ResponseEntity<List<LoteProduccionResponseDTO>> obtenerInventario() {
+        return ResponseEntity.ok(loteProduccionService.obtenerInventario());
+    }
+
+    /**
+     * Endpoint para marcar un lote como defectuoso.
+     */
+    @PatchMapping("/{id}/marcar-defectuoso")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    public ResponseEntity<LoteProduccionResponseDTO> marcarComoDefectuoso(@PathVariable Long id) {
+        LoteProduccionResponseDTO loteActualizado = loteProduccionService.marcarComoDefectuoso(id);
+        return ResponseEntity.ok(loteActualizado);
+    }
+}
