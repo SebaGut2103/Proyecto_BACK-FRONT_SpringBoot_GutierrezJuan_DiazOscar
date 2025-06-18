@@ -1,11 +1,19 @@
-import React from "react";
+import { useState } from 'react'
+import './App.css'
+import Navbar from './components/Navbar/Navbar'
+import Hero from './components/Hero/Hero'
 
-const App = () => {
-  return(
-    <div>
-      <Header />
-    </div>
+function App() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <>
+      <div>
+        <Navbar/>
+        <Hero/>
+      </div>
+    </>
   )
 }
 
-export default App;
+export default App
