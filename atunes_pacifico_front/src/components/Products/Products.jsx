@@ -37,20 +37,24 @@ const Products = () => {
           {productData.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 flex flex-col justify-between"
+              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 flex flex-col h-full"
             >
               <img
                 src={product.image}
                 alt={product.name}
                 className="w-full h-64 object-contain bg-gray-50"
               />
-              <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold text-blue-800">{product.name}</h3>
-                <p className="text-gray-600 mt-2 text-sm">{product.description}</p>
-                <p className="text-lg font-bold text-blue-700 mt-4">{product.price}</p>
-                <button className="mt-4 bg-blue-800 text-white py-2 px-4 rounded-lg hover:bg-blue-900 transition">
-                  Comprar
-                </button>
+              <div className="p-5 flex flex-col justify-between flex-grow">
+                <div>
+                  <h3 className="text-xl font-semibold text-blue-800">{product.name}</h3>
+                  <p className="text-gray-600 mt-2 text-sm">{product.description}</p>
+                </div>
+                <div className="mt-4">
+                  <p className="text-lg font-bold text-blue-700">{product.price}</p>
+                  <button className="mt-2 w-full bg-blue-800 text-white py-2 px-4 rounded-lg hover:bg-blue-900 transition">
+                    Comprar
+                  </button>
+                </div>
               </div>
             </div>
           ))}
