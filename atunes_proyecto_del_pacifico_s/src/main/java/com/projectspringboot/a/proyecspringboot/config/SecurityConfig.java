@@ -1,10 +1,14 @@
 package com.projectspringboot.a.proyecspringboot.config;
 
 
+
+import com.projectspringboot.a.proyecspringboot.security.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,70 +17,69 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Habilita la seguridad a nivel de método (para @PreAuthorize)
+@EnableMethodSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Bean del AuthenticationManager, necesario para el proceso de login
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Habilitar CORS usando la configuración global que ya creamos
-                .cors(withDefaults())
-                
-                // 2. Deshabilitar CSRF porque usamos JWT (no hay sesiones)
-                .csrf(csrf -> csrf.disable())
-                
-                // 3. Definir las reglas de autorización de las peticiones
-                .authorizeHttpRequests(auth -> auth
-                        // a. Permitir TODAS las peticiones OPTIONS (para las pre-flight de CORS)
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        
-                        // b. Permitir el acceso público al endpoint de login
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        
-                        // c. Requerir autenticación para todas las demás peticiones
-                        .anyRequest().authenticated()
-                )
-                
-                // 4. Establecer la política de gestión de sesiones como STATELESS (sin estado)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        // Aquí, más adelante, añadirás el filtro de JWT
-        // http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .cors(withDefaults())
+            .csrf(csrf -> csrf.disable())
+            
+            // --- CAMBIO CLAVE AQUÍ ---
+            // Le decimos a Spring Security que configure explícitamente el manejo de usuarios anónimos.
+            .anonymous(anonymous -> anonymous.disable()) // Deshabilitamos la configuración por defecto para redefinirla
+            
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/v1/auth/**").permitAll() // La ruta de login es pública
+                    .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider());
 
         return http.build();
-    }
-    
-    // Opcional: Puedes mantener la configuración de CORS aquí en lugar de en un WebConfig separado
-    // si lo prefieres. Ambas formas funcionan, pero esta es más autocontenida.
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:5173")
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
     }
 }
