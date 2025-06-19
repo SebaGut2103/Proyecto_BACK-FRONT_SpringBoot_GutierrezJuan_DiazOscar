@@ -2,32 +2,47 @@ package com.projectspringboot.a.proyecspringboot.controller;
 
 
 
-// ... (importaciones necesarias: AuthenticationManager, JwtService, etc.)
 import com.projectspringboot.a.proyecspringboot.dto.AuthRequestDTO;
 import com.projectspringboot.a.proyecspringboot.dto.AuthResponseDTO;
+import com.projectspringboot.a.proyecspringboot.entity.Usuario;
+import com.projectspringboot.a.proyecspringboot.repository.UsuarioRepository;
+import com.projectspringboot.a.proyecspringboot.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-@CrossOrigin // Permite peticiones desde otros orígenes (ej. tu frontend en React)
 public class AuthController {
 
-    // Debes configurar estos Beans en tu SecurityConfig
-    // @Autowired
-    // private;
-    // @Autowired
-    // private ;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository; // Para buscar el usuario completo
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequest) {
-        // Aquí iría la lógica de autenticación con AuthenticationManager
-        // y la generación del token con JwtService.
+        // 1. Autenticar al usuario con el manager de Spring Security
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getNombreUsuario(), authRequest.getContrasena())
+        );
 
-        // --- Lógica de ejemplo (a reemplazar con la real de Spring Security) ---
-        System.out.println("Intentando loguear a: " + authRequest.getNombreUsuario());
-        String tokenDeEjemplo = "jwt-token-generado-para-" + authRequest.getNombreUsuario();
-        return ResponseEntity.ok(new AuthResponseDTO(tokenDeEjemplo));
+        // Si la autenticación es exitosa, Spring Security tiene el contexto del usuario
+        // 2. Buscamos el usuario completo para pasarlo al generador de tokens
+        Usuario usuario = usuarioRepository.findByNombreUsuario(authRequest.getNombreUsuario())
+                .orElseThrow(() -> new UsernameNotFoundException("Error al generar el token, usuario no encontrado."));
+
+        // 3. Generamos el token JWT real
+        String token = jwtService.generateToken(usuario);
+
+        return ResponseEntity.ok(new AuthResponseDTO(token));
     }
 }
