@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/clientes")
 @CrossOrigin
 public class ClienteController {
-// sebas es medio 
+// sebas es medio
     @Autowired
     private ClienteService clienteService;
 
