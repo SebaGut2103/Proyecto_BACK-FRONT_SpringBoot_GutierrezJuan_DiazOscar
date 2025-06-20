@@ -1,8 +1,10 @@
 package com.projectspringboot.a.proyecspringboot.security;
 
 
-import com.projectspringboot.a.proyecspringboot.entity.Usuario;
 
+
+
+import com.projectspringboot.a.proyecspringboot.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,55 +22,46 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Genera una clave segura para HS256. ¡En un proyecto real, esta clave debe
-    // guardarse de forma segura y no estar hardcodeada!
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // Clave secreta fija. En producción, esto debería cargarse desde un archivo de propiedades.
+    private static final String SECRET_KEY_STRING = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
-    public String generateToken(Usuario usuario) {
-        Map<String, Object> claims = new HashMap<>();
-        // Puedes añadir claims personalizados aquí
-        claims.put("rol", usuario.getRol().getNombre());
-        claims.put("nombreUsuario", usuario.getNombreUsuario());
+    // Creamos la clave como un campo final que se inicializa una sola vez.
+    private final Key signingKey;
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(usuario.getNombreUsuario())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas de validez
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
-                .compact();
+    public JwtService() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY_STRING);
+        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    
-    
+    // --- MÉTODOS PÚBLICOS ---
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
+    public String generateToken(Usuario usuario) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("rol", usuario.getRol().getNombre());
+        claims.put("nombreUsuario", usuario.getNombreUsuario());
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    private Key getSigningKey() {
-        // La clave secreta debe ser la misma que usaste para generar el token
-        // ¡En un proyecto real, guárdala de forma segura!
-        String secretString = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-        byte[] keyBytes = Decoders.BASE64.decode(secretString);
-        return Keys.hmacShaKeyFor(keyBytes);
+        return buildToken(claims, usuario.getNombreUsuario());
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    // --- MÉTODOS PRIVADOS ---
+
+    private String buildToken(Map<String, Object> extraClaims, String subject) {
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
+                .signWith(this.signingKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private boolean isTokenExpired(String token) {
@@ -77,5 +70,18 @@ public class JwtService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(this.signingKey) // Usamos la clave de firma consistente
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

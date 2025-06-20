@@ -26,7 +26,7 @@ public class UsuarioController {
      * Solo accesible por administradores.
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO usuarioRequest) {
         UsuarioResponseDTO nuevoUsuario = usuarioService.registrarUsuario(usuarioRequest);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
@@ -37,7 +37,7 @@ public class UsuarioController {
      * Solo accesible por administradores.
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<List<UsuarioResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(usuarioService.obtenerTodos());
     }
@@ -47,7 +47,7 @@ public class UsuarioController {
      * Solo accesible por administradores.
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.obtenerUsuarioPorId(id));
     }
@@ -57,7 +57,7 @@ public class UsuarioController {
      * Solo accesible por administradores.
      */
     @PatchMapping("/{id}/estado")
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestParam boolean estado) {
         usuarioService.cambiarEstado(id, estado);
         return ResponseEntity.noContent().build();
