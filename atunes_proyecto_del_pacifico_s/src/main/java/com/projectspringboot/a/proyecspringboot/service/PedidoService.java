@@ -10,4 +10,5 @@ public interface PedidoService {
     PedidoResponseDTO crearPedido(PedidoRequestDTO pedidoRequest);
     PedidoResponseDTO obtenerPedidoPorId(Long id);
     List<PedidoResponseDTO> obtenerPedidosPorCliente(Long clienteId);
+    List<PedidoResponseDTO> obtenerHistorialDePedidos(String nombreUsuario);
 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 public class PedidoServiceImpl implements PedidoService {
 
@@ -92,6 +93,17 @@ public class PedidoServiceImpl implements PedidoService {
         // --> CAMBIO AQUÍ: Usamos el mapper para convertir cada pedido de la lista a su DTO.
         return pedidos.stream()
                 .map(PedidoMapper::toDto) // Llama al método toDto por cada elemento de la lista
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PedidoResponseDTO> obtenerHistorialDePedidos(String nombreUsuario) {
+        // Usamos el nuevo método del repositorio
+        List<Pedido> pedidos = pedidoRepository.findByCliente_Usuario_NombreUsuario(nombreUsuario);
+        
+        // Mapeamos la lista de entidades a una lista de DTOs y la devolvemos
+        return pedidos.stream()
+                .map(PedidoMapper::toDto)
                 .collect(Collectors.toList());
     }
 }

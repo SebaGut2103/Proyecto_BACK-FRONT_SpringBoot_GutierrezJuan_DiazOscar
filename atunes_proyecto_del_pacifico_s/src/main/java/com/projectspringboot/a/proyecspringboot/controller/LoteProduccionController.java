@@ -25,7 +25,7 @@ public class LoteProduccionController {
      * Endpoint para registrar un nuevo lote de producción.
      */
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR')")
     public ResponseEntity<LoteProduccionResponseDTO> registrarLote(@RequestBody LoteProduccionRequestDTO loteRequest) {
         LoteProduccionResponseDTO nuevoLote = loteProduccionService.registrarLote(loteRequest);
         return new ResponseEntity<>(nuevoLote, HttpStatus.CREATED);
@@ -36,7 +36,7 @@ public class LoteProduccionController {
      * Accesible también por clientes para ver productos disponibles.
      */
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR', 'CLIENTE')")
     public ResponseEntity<List<LoteProduccionResponseDTO>> obtenerInventario() {
         return ResponseEntity.ok(loteProduccionService.obtenerInventario());
     }
@@ -45,7 +45,7 @@ public class LoteProduccionController {
      * Endpoint para marcar un lote como defectuoso.
      */
     @PatchMapping("/{id}/marcar-defectuoso")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR', 'CLIENTE')")
     public ResponseEntity<LoteProduccionResponseDTO> marcarComoDefectuoso(@PathVariable Long id) {
         LoteProduccionResponseDTO loteActualizado = loteProduccionService.marcarComoDefectuoso(id);
         return ResponseEntity.ok(loteActualizado);

@@ -17,25 +17,25 @@ import java.util.List;
 @RequestMapping("/api/v1/clientes")
 @CrossOrigin
 public class ClienteController {
-
+// sebas es medio
     @Autowired
     private ClienteService clienteService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR')")
     public ResponseEntity<ClienteResponseDTO> crearCliente(@RequestBody ClienteRequestDTO clienteRequest) {
         ClienteResponseDTO nuevoCliente = clienteService.crearCliente(clienteRequest);
         return new ResponseEntity<>(nuevoCliente, HttpStatus.CREATED);
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR')")
     public ResponseEntity<List<ClienteResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(clienteService.obtenerTodos());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'OPERADOR')")
+    @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR')")
     public ResponseEntity<ClienteResponseDTO> obtenerClientePorId(@PathVariable Long id) {
         return ResponseEntity.ok(clienteService.obtenerClientePorId(id));
     }
