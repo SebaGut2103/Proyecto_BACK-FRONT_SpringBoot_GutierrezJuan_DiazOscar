@@ -1,30 +1,29 @@
 // Ubicación: src/pages/GestionUsuariosPage.jsx
 import React, { useState, useEffect } from 'react';
 import usuarioService from '../services/usuarioService';
-// Podríamos añadir un formulario en un modal para crear usuarios, pero por ahora nos centramos en la lista
 
 function GestionUsuariosPage() {
     const [usuarios, setUsuarios] = useState([]);
-
-    const fetchUsuarios = () => {
-        usuarioService.getAll()
-            .then(response => setUsuarios(response.data))
-            .catch(error => console.error("Error al obtener usuarios:", error));
-    };
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchUsuarios();
-    }, []);
-
-    const handleCambiarEstado = (id, estadoActual) => {
-        const nuevoEstado = !estadoActual;
-        usuarioService.cambiarEstado(id, nuevoEstado)
-            .then(() => {
-                alert(`Usuario ${nuevoEstado ? 'activado' : 'desactivado'} correctamente.`);
-                fetchUsuarios(); // Recargamos la lista para ver el cambio
+        // Este efecto se ejecuta una sola vez cuando el componente se monta
+        usuarioService.getAll()
+            .then(response => {
+                setUsuarios(response.data);
             })
-            .catch(error => alert("Error al cambiar el estado del usuario."));
-    };
+            .catch(err => {
+                console.error("Error detallado al obtener usuarios:", err);
+                setError("No se pudieron cargar los usuarios. ¿Tienes los permisos necesarios?");
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []); // El array vacío asegura que solo se ejecute una vez
+
+    if (loading) return <p>Cargando lista de usuarios...</p>;
+    if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return (
         <div>
@@ -37,7 +36,6 @@ function GestionUsuariosPage() {
                         <th>Email</th>
                         <th>Rol</th>
                         <th>Estado</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,11 +46,6 @@ function GestionUsuariosPage() {
                             <td>{usuario.email}</td>
                             <td>{usuario.nombreRol}</td>
                             <td>{usuario.estaActivo ? 'Activo' : 'Inactivo'}</td>
-                            <td>
-                                <button onClick={() => handleCambiarEstado(usuario.id, usuario.estaActivo)}>
-                                    {usuario.estaActivo ? 'Desactivar' : 'Activar'}
-                                </button>
-                            </td>
                         </tr>
                     ))}
                 </tbody>

@@ -1,9 +1,10 @@
 // Ubicación: src/services/pedidoService.js
 import apiClient from './api';
 
-// Suponiendo que tu backend tiene un endpoint /pedidos/mis-pedidos
-const getMisPedidos = () => {
-    return apiClient.get('/pedidos/mis-pedidos'); // Necesitarás crear este endpoint en el backend
+const getHistorial = () => {
+    // Este endpoint debe devolver los pedidos del cliente autenticado.
+    // El backend lo identificará a través del token JWT.
+    return apiClient.get('/pedidos/historial'); 
 };
 
 const crearPedido = (pedidoData) => {
@@ -11,7 +12,7 @@ const crearPedido = (pedidoData) => {
 };
 
 const pedidoService = {
-    getMisPedidos,
+    getHistorial,
     crearPedido
 };
 

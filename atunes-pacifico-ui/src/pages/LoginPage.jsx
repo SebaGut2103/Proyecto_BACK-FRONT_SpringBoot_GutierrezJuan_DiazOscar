@@ -14,10 +14,25 @@ function LoginPage() {
         e.preventDefault();
         setError('');
         try {
-            await login(username, password);
-            navigate('/dashboard'); // Redirige al dashboard después del login exitoso
+            const loggedInUser = await login(username, password);
+            
+            // Redirigimos basándonos en el rol del usuario que nos devuelve la función de login
+            switch (loggedInUser.rol) {
+                case 'ADMINISTRADOR':
+                    navigate('/admin/usuarios');
+                    break;
+                case 'OPERADOR':
+                    navigate('/inventario');
+                    break;
+                case 'CLIENTE':
+                    navigate('/mis-pedidos');
+                    break;
+                default:
+                    navigate('/dashboard');
+            }
         } catch (err) {
             setError('Usuario o contraseña incorrectos.');
+            console.error(err);
         }
     };
 
