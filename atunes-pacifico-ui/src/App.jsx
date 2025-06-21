@@ -14,6 +14,7 @@ import CrearPedidoPage from './pages/CrearPedidoPage';
 import HistorialComprasPage from './pages/HistorialComprasPage';
 import GestionInventarioPage from './pages/GestionInventarioPage';
 import GestionUsuariosPage from './pages/GestionUsuariosPage';
+import ReportesPage from './pages/ReportesPage';
 
 /**
  * El componente Dashboard actúa como un centro de redirección inicial
@@ -69,6 +70,8 @@ function App() {
                                         
                                         {/* Ruta de Administrador */}
                                         <Route path="admin/usuarios" element={<GestionUsuariosPage />} />
+
+                                        <Route path="reportes" element={<ReportesPage />} />
 
                                         {/* Ruta por defecto si se ingresa una URL inválida estando logueado */}
                                         <Route path="*" element={<Navigate to="/dashboard" replace />} />
