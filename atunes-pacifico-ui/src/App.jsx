@@ -2,58 +2,81 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Importación de componentes y páginas
 import LoginPage from './pages/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/MainLayout';
 
-// Importa tus nuevas páginas
+// Importación de todas las páginas específicas de cada rol
 import MisPedidosPage from './pages/MisPedidosPage';
+import CrearPedidoPage from './pages/CrearPedidoPage';
+import HistorialComprasPage from './pages/HistorialComprasPage';
 import GestionInventarioPage from './pages/GestionInventarioPage';
-import GestionUsuariosPage from './pages/GestionUsuariosPage'; // <-- Nueva importación
-import CrearPedidoPage from './pages/CrearPedidoPage'; // <-- Nueva importación
+import GestionUsuariosPage from './pages/GestionUsuariosPage';
 
-// Un componente Dashboard que redirige según el rol
+/**
+ * El componente Dashboard actúa como un centro de redirección inicial
+ * después del login, enviando a cada usuario a su página principal.
+ */
 const Dashboard = () => {
     const { user } = useAuth();
     
-    if (!user) return null;
+    if (!user) {
+        // Esto no debería ocurrir dentro de una ruta protegida, pero es una salvaguarda.
+        return <Navigate to="/login" />;
+    }
 
+    // Redirige al usuario a su página de inicio según su rol.
     switch (user.rol) {
-        case 'ROLE_ADMINISTRADOR':
-            return <GestionUsuariosPage />; // Ahora el dashboard del admin es la gestión de usuarios
-        case 'ROLE_OPERADOR':
-            return <GestionInventarioPage />;
-        case 'ROLE_CLIENTE':
-            return <MisPedidosPage />;
+        case 'ADMINISTRADOR':
+            return <Navigate to="/admin/usuarios" replace />;
+        case 'OPERADOR':
+            return <Navigate to="/inventario" replace />;
+        case 'CLIENTE':
+            return <Navigate to="/mis-pedidos" replace />;
         default:
-            return <Navigate to="/login" />;
+            // Si el rol no es reconocido, lo enviamos al login.
+            return <Navigate to="/login" replace />;
     }
 };
-
 
 function App() {
     return (
         <AuthProvider>
             <Router>
                 <Routes>
+                    {/* Ruta Pública: Solo se puede acceder si no estás autenticado */}
                     <Route path="/login" element={<LoginPage />} />
 
-                    {/* Rutas protegidas envueltas en el Layout Principal */}
-                    <Route path="/*" element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <Routes>
-                                    <Route path="dashboard" element={<Dashboard />} />
-                                    <Route path="mis-pedidos" element={<MisPedidosPage />} />
-                                    <Route path="crear-pedido" element={<CrearPedidoPage />} />
-                                    <Route path="inventario" element={<GestionInventarioPage />} />
-                                    <Route path="admin/usuarios" element={<GestionUsuariosPage />} />
-                                    {/* Aquí añadirías la ruta de reportes */}
-                                    <Route path="*" element={<Navigate to="/dashboard" />} />
-                                </Routes>
-                            </MainLayout>
-                        </ProtectedRoute>
-                    } />
+                    {/* Contenedor de Rutas Protegidas */}
+                    <Route 
+                        path="/*" // Captura cualquier otra ruta
+                        element={
+                            <ProtectedRoute>
+                                <MainLayout>
+                                    <Routes>
+                                        {/* Rutas específicas para cada funcionalidad */}
+                                        <Route path="dashboard" element={<Dashboard />} />
+                                        
+                                        {/* Rutas de Cliente */}
+                                        <Route path="mis-pedidos" element={<MisPedidosPage />} />
+                                        <Route path="crear-pedido" element={<CrearPedidoPage />} />
+                                        <Route path="historial-compras" element={<HistorialComprasPage />} />
+
+                                        {/* Ruta de Operador */}
+                                        <Route path="inventario" element={<GestionInventarioPage />} />
+                                        
+                                        {/* Ruta de Administrador */}
+                                        <Route path="admin/usuarios" element={<GestionUsuariosPage />} />
+
+                                        {/* Ruta por defecto si se ingresa una URL inválida estando logueado */}
+                                        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                                    </Routes>
+                                </MainLayout>
+                            </ProtectedRoute>
+                        } 
+                    />
                 </Routes>
             </Router>
         </AuthProvider>
