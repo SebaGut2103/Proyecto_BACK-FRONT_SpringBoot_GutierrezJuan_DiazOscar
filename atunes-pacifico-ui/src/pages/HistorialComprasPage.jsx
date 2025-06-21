@@ -1,45 +1,36 @@
-// Ubicación: src/pages/MisPedidosPage.jsx
-import React, { useState, useEffect } from 'react';
-import pedidoService from '../services/pedidoService'; // Asegúrate de que este servicio exista y esté correcto
+// Ubicación: src/pages/HistorialComprasPage.jsx
 
-function MisPedidosPage() {
+import React, { useState, useEffect } from 'react';
+import pedidoService from '../services/pedidoService'; // Asegúrate de que este servicio exista
+
+function HistorialComprasPage() {
     const [pedidos, setPedidos] = useState([]);
-    const [loading, setLoading] = useState(true); // 1. Estado para saber si estamos cargando datos
-    const [error, setError] = useState(null);     // 2. Estado para manejar posibles errores
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Este efecto se ejecuta cuando el componente se monta por primera vez
+        // Asumimos que tienes un método en tu servicio para obtener el historial
         pedidoService.getHistorial()
             .then(response => {
-                // Éxito: guardamos los pedidos en el estado
                 setPedidos(response.data);
             })
             .catch(err => {
-                // Error: guardamos el mensaje de error para mostrarlo al usuario
-                console.error("Error al obtener el historial de pedidos:", err);
-                setError("No se pudo cargar tu historial. Por favor, intenta de nuevo más tarde.");
+                console.error("Error al obtener el historial:", err);
+                setError("No se pudo cargar el historial de compras.");
             })
             .finally(() => {
-                // Haya éxito o error, dejamos de cargar
                 setLoading(false);
             });
-    }, []); // El array vacío asegura que se ejecute solo una vez.
+    }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
 
-    // 3. Lógica de renderizado condicional
-    if (loading) {
-        return <p>Cargando tus pedidos...</p>;
-    }
+    if (loading) return <p>Cargando historial de compras...</p>;
+    if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
-    if (error) {
-        return <p style={{ color: 'red' }}>{error}</p>;
-    }
-
-    // 4. Renderizado cuando ya tenemos los datos
     return (
         <div>
-            <h2>Mis Pedidos</h2>
+            <h2>Mi Historial de Compras</h2>
             {pedidos.length === 0 ? (
-                <p>Aún no has realizado ningún pedido.</p>
+                <p>No has realizado ningún pedido todavía.</p>
             ) : (
                 <table>
                     <thead>
@@ -58,7 +49,7 @@ function MisPedidosPage() {
                                 <td>{new Date(pedido.fechaPedido).toLocaleDateString()}</td>
                                 <td>{new Date(pedido.fechaEntrega).toLocaleDateString()}</td>
                                 <td>${pedido.precioTotal.toFixed(2)}</td>
-                                <td style={{ fontWeight: 'bold' }}>{pedido.estado}</td>
+                                <td>{pedido.estado}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -68,4 +59,4 @@ function MisPedidosPage() {
     );
 }
 
-export default MisPedidosPage;
+export default HistorialComprasPage;
