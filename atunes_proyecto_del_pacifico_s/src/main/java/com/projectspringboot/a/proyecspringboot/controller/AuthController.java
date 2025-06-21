@@ -4,10 +4,14 @@ package com.projectspringboot.a.proyecspringboot.controller;
 
 import com.projectspringboot.a.proyecspringboot.dto.AuthRequestDTO;
 import com.projectspringboot.a.proyecspringboot.dto.AuthResponseDTO;
+<<<<<<< HEAD
 import com.projectspringboot.a.proyecspringboot.entity.Usuario;
 import com.projectspringboot.a.proyecspringboot.repository.UsuarioRepository;
 import com.projectspringboot.a.proyecspringboot.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+=======
+// import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> 3acb7991ef44245c75ac298f0915759d335025b8
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
