@@ -4,6 +4,7 @@ package com.projectspringboot.a.proyecspringboot.controller;
 
 
 
+import com.projectspringboot.a.proyecspringboot.dto.ReporteVentasPorClienteDTO;
 import com.projectspringboot.a.proyecspringboot.dto.ReporteVentasPorProductoDTO;
 import com.projectspringboot.a.proyecspringboot.service.ReporteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,12 @@ public class ReporteController {
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<List<ReporteVentasPorProductoDTO>> getReporteVentasPorProducto() {
         return ResponseEntity.ok(reporteService.getReporteVentasPorProducto());
+    }
+
+
+    @GetMapping("/ventas-por-cliente")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
+    public ResponseEntity<List<ReporteVentasPorClienteDTO>> getReporteVentasPorCliente() {
+        return ResponseEntity.ok(reporteService.getReporteVentasPorCliente());
     }
 }
