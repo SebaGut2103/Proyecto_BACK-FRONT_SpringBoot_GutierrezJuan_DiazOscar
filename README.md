@@ -16,22 +16,7 @@ El backend está construido con **Spring Boot** y sigue las mejores prácticas d
 * **API RESTful Segura**: Endpoints protegidos mediante Spring Security y JSON Web Tokens (JWT).
 * **Documentación de API**: Documentación interactiva y automática de los endpoints con Swagger.
 
-## 🛠️ Tecnologías Utilizadas
 
-### Backend
-* Java 17
-* Spring Boot 3.5.0
-* Spring Web
-* Spring Data JPA
-* Spring Security
-* Maven
-* MySQL
-* JSON Web Tokens (JWT) para la autenticación
-* Lombok
-* Swagger (OpenAPI) para la documentación de la API
-
-### Frontend
-* React (para consumir los endpoints del backend)
 
 ## 🚀 Puesta en Marcha
 
