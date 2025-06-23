@@ -15,7 +15,7 @@ public class ClienteMapper {
         dto.setId(cliente.getId());
         dto.setNombre(cliente.getNombre());
         dto.setRuc(cliente.getRuc());
-        // Aquí podrías añadir más campos si los necesitaras en la respuesta
+        
         return dto;
     }
 }

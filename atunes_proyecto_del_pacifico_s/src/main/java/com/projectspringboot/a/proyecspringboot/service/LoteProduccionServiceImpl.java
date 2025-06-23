@@ -32,7 +32,7 @@ public class LoteProduccionServiceImpl implements LoteProduccionService {
         lote.setFechaProduccion(req.getFechaProduccion());
         lote.setTipoProducto(req.getTipoProducto());
         lote.setCantidadProducida(req.getCantidadProducida());
-        lote.setCantidadDisponible(req.getCantidadProducida()); // Lógica de negocio
+        lote.setCantidadDisponible(req.getCantidadProducida());
         lote.setEstado(EstadoLote.Disponible);
 
         LoteProduccion loteGuardado = loteProduccionRepository.save(lote);

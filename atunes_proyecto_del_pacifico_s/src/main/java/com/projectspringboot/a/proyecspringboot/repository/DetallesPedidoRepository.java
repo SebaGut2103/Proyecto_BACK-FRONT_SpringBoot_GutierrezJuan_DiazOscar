@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface DetallesPedidoRepository extends JpaRepository<DetallesPedido, Long> {
 
-    // --- MÉTODO NUEVO A AÑADIR ---
+    
     @Query("SELECT new com.projectspringboot.a.proyecspringboot.dto.ReporteVentasPorProductoDTO(" +
            "dp.loteProduccion.tipoProducto, " +
            "SUM(dp.cantidad), " +

@@ -21,9 +21,7 @@ public class LoteProduccionController {
     @Autowired
     private LoteProduccionService loteProduccionService;
 
-    /**
-     * Endpoint para registrar un nuevo lote de producción.
-     */
+    
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR')")
     public ResponseEntity<LoteProduccionResponseDTO> registrarLote(@RequestBody LoteProduccionRequestDTO loteRequest) {
@@ -31,19 +29,14 @@ public class LoteProduccionController {
         return new ResponseEntity<>(nuevoLote, HttpStatus.CREATED);
     }
 
-    /**
-     * Endpoint para obtener una lista de todo el inventario/lotes.
-     * Accesible también por clientes para ver productos disponibles.
-     */
+    
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR', 'CLIENTE')")
     public ResponseEntity<List<LoteProduccionResponseDTO>> obtenerInventario() {
         return ResponseEntity.ok(loteProduccionService.obtenerInventario());
     }
 
-    /**
-     * Endpoint para marcar un lote como defectuoso.
-     */
+    
     @PatchMapping("/{id}/marcar-defectuoso")
     @PreAuthorize("hasAnyAuthority('ADMINISTRADOR', 'OPERADOR', 'CLIENTE')")
     public ResponseEntity<LoteProduccionResponseDTO> marcarComoDefectuoso(@PathVariable Long id) {

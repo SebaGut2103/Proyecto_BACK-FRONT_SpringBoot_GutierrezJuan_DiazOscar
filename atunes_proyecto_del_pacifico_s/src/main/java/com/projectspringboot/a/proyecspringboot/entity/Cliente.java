@@ -35,7 +35,7 @@ public class Cliente {
     private EstadoCliente estado = EstadoCliente.Activo;
 
     @OneToOne
-    @JoinColumn(name = "usuario_id", unique = true) // 'unique = true' asegura la relación uno a uno
+    @JoinColumn(name = "usuario_id", unique = true) // relacion uno a uno
     private Usuario usuario;
 
     @Column(name = "fecha_creacion", updatable = false)

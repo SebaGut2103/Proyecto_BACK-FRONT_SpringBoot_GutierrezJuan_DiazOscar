@@ -15,6 +15,6 @@ public class PedidoResponseDTO {
     private LocalDate fechaEntrega;
     private String estado;
     private BigDecimal precioTotal;
-    private ClienteResponseDTO cliente; // Objeto anidado
+    private ClienteResponseDTO cliente;
     private List<DetallePedidoResponseDTO> detalles; // Lista de objetos anidados
 }

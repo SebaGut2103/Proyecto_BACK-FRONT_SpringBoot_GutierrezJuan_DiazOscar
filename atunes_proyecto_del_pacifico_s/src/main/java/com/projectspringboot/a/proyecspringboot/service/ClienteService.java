@@ -10,6 +10,5 @@ public interface ClienteService {
     ClienteResponseDTO crearCliente(ClienteRequestDTO clienteRequest);
     ClienteResponseDTO obtenerClientePorId(Long id);
     List<ClienteResponseDTO> obtenerTodos();
-    // Requerimiento a futuro: Ver un cliente con su historial de pedidos
-    // ClienteConPedidosDTO obtenerClienteConPedidos(Long id);
+    
 }

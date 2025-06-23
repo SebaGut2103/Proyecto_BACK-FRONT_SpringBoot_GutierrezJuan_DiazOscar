@@ -32,7 +32,7 @@ public class PedidoController {
            @Valid @RequestBody PedidoRequestDTO pedidoRequest,
             Authentication authentication
     ) {
-        String username = authentication.getName(); // Obtenemos el nombre de usuario del token.
+        String username = authentication.getName();
         PedidoResponseDTO nuevoPedido = pedidoService.crearPedido(pedidoRequest, username);
         return new ResponseEntity<>(nuevoPedido, HttpStatus.CREATED);
     }

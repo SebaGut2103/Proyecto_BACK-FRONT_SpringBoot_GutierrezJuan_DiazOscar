@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    // Método para buscar un cliente por su RUC.
+    // Método  buscar por su RUC.
     Optional<Cliente> findByRuc(String ruc);
     Optional<Cliente> findByUsuario(Usuario usuario);
 }

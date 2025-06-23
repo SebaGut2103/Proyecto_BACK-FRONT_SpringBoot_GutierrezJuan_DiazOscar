@@ -26,7 +26,7 @@ public class AuthController {
     private JwtService jwtService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // Para buscar el usuario completo
+    private UsuarioRepository usuarioRepository;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequest) {

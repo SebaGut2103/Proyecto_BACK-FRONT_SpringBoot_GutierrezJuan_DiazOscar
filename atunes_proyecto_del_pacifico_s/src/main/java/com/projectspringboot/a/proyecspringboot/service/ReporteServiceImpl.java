@@ -28,7 +28,7 @@ public class ReporteServiceImpl implements ReporteService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private LoteProduccionRepository loteProduccionRepository; // <-- Inyectamos el nuevo repositorio
+    private LoteProduccionRepository loteProduccionRepository;
 
     @Override
     public List<ReporteVentasPorProductoDTO> getReporteVentasPorProducto() {
@@ -40,14 +40,11 @@ public class ReporteServiceImpl implements ReporteService {
         return pedidoRepository.obtenerReporteVentasPorCliente();
     }
 
-    /**
-     * Obtiene un reporte que cuenta los lotes agrupados por su estado.
-     * @return Una lista de DTOs con el resumen del estado del inventario.
-     */
+
     @Override
     public List<ReporteInventarioDTO> getReporteInventario() {
-        // Asumiendo que el método obtenerReporteDeInventario() ya fue añadido
-        // a LoteProduccionRepository como discutimos.
+        
+        
         return loteProduccionRepository.obtenerReporteDeInventario();
     }
 }
