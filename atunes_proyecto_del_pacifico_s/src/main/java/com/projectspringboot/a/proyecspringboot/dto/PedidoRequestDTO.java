@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class PedidoRequestDTO {
-    private Long clienteId;
+ 
     private LocalDate fechaEntrega;
     private List<DetallePedidoRequestDTO> detalles;
 }

@@ -3,6 +3,8 @@ package com.projectspringboot.a.proyecspringboot.service;
 
 
 
+
+
 import com.projectspringboot.a.proyecspringboot.dto.PedidoRequestDTO;
 import com.projectspringboot.a.proyecspringboot.dto.PedidoResponseDTO;
 import com.projectspringboot.a.proyecspringboot.entity.*;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 public class PedidoServiceImpl implements PedidoService {
 
@@ -28,12 +29,19 @@ public class PedidoServiceImpl implements PedidoService {
     private ClienteRepository clienteRepository;
     @Autowired
     private LoteProduccionRepository loteProduccionRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
 
     @Override
     @Transactional
-    public PedidoResponseDTO crearPedido(PedidoRequestDTO pedidoRequest) {
-        Cliente cliente = clienteRepository.findById(pedidoRequest.getClienteId())
-                .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: " + pedidoRequest.getClienteId()));
+    public PedidoResponseDTO crearPedido(PedidoRequestDTO pedidoRequest, String username) {
+        
+        Usuario usuario = usuarioRepository.findByNombreUsuario(username)
+                .orElseThrow(() -> new EntityNotFoundException("El usuario autenticado no fue encontrado: " + username));
+        
+        Cliente cliente = clienteRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró un cliente asociado al usuario: " + username));
 
         Pedido nuevoPedido = new Pedido();
         nuevoPedido.setCliente(cliente);
@@ -42,6 +50,7 @@ public class PedidoServiceImpl implements PedidoService {
 
         BigDecimal precioTotalCalculado = BigDecimal.ZERO;
 
+        
         for (var detalleDto : pedidoRequest.getDetalles()) {
             LoteProduccion lote = loteProduccionRepository.findById(detalleDto.getLoteId())
                     .orElseThrow(() -> new EntityNotFoundException("Lote no encontrado con ID: " + detalleDto.getLoteId()));
@@ -50,26 +59,29 @@ public class PedidoServiceImpl implements PedidoService {
                 throw new IllegalStateException("Stock insuficiente para el lote: " + lote.getCodigoLote());
             }
 
+            
             lote.setCantidadDisponible(lote.getCantidadDisponible() - detalleDto.getCantidad());
-            // No es necesario guardar aquí, JPA lo hará al final de la transacción
-
+            
             DetallesPedido detalle = new DetallesPedido();
             detalle.setPedido(nuevoPedido);
             detalle.setLoteProduccion(lote);
             detalle.setCantidad(detalleDto.getCantidad());
-            BigDecimal precioUnitario = new BigDecimal("2.50"); // Precio de ejemplo
+            
+            BigDecimal precioUnitario = new BigDecimal("2.50"); 
             detalle.setPrecioUnitario(precioUnitario);
 
             nuevoPedido.getDetalles().add(detalle);
 
+            
             precioTotalCalculado = precioTotalCalculado.add(precioUnitario.multiply(new BigDecimal(detalle.getCantidad())));
         }
 
         nuevoPedido.setPrecioTotal(precioTotalCalculado);
 
+        
         Pedido pedidoGuardado = pedidoRepository.save(nuevoPedido);
-
-        // --> CAMBIO AQUÍ: Usamos el mapper para crear la respuesta.
+        
+        
         return PedidoMapper.toDto(pedidoGuardado);
     }
 
@@ -77,31 +89,23 @@ public class PedidoServiceImpl implements PedidoService {
     public PedidoResponseDTO obtenerPedidoPorId(Long id) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + id));
-
-        // --> CAMBIO AQUÍ: Usamos el mapper para crear la respuesta.
         return PedidoMapper.toDto(pedido);
     }
 
     @Override
     public List<PedidoResponseDTO> obtenerPedidosPorCliente(Long clienteId) {
-        // Primero validamos que el cliente exista
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: " + clienteId));
-
-        List<Pedido> pedidos = pedidoRepository.findByCliente(cliente);
-
-        // --> CAMBIO AQUÍ: Usamos el mapper para convertir cada pedido de la lista a su DTO.
+        if (!clienteRepository.existsById(clienteId)) {
+            throw new EntityNotFoundException("Cliente no encontrado con ID: " + clienteId);
+        }
+        List<Pedido> pedidos = pedidoRepository.findByClienteId(clienteId);
         return pedidos.stream()
-                .map(PedidoMapper::toDto) // Llama al método toDto por cada elemento de la lista
+                .map(PedidoMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PedidoResponseDTO> obtenerHistorialDePedidos(String nombreUsuario) {
-        // Usamos el nuevo método del repositorio
         List<Pedido> pedidos = pedidoRepository.findByCliente_Usuario_NombreUsuario(nombreUsuario);
-        
-        // Mapeamos la lista de entidades a una lista de DTOs y la devolvemos
         return pedidos.stream()
                 .map(PedidoMapper::toDto)
                 .collect(Collectors.toList());
