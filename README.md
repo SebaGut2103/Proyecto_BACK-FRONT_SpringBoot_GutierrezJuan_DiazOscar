@@ -47,11 +47,7 @@ El backend está construido con **Spring Boot** y sigue las mejores prácticas d
 
 
 
-# Sistema de Gestión para Atunes del Pacífico S.A.
 
-Este proyecto es un sistema de gestión integral (backend y frontend) desarrollado para la empresa "Atunes del Pacífico S.A.". La aplicación permite administrar las operaciones de la empresa, desde la producción y el control de inventario, hasta la gestión de clientes, pedidos, ventas y la generación de reportes clave.
-
-El backend está construido con **Spring Boot** y sigue las mejores prácticas de seguridad utilizando **Spring Security con JWT** para la autenticación y autorización basada en roles. El frontend es una aplicación moderna de **React** construida con Vite y estilizada con **MUI**.
 
 ## 📜 Índice
 
