@@ -16,22 +16,7 @@ El backend está construido con **Spring Boot** y sigue las mejores prácticas d
 * **API RESTful Segura**: Endpoints protegidos mediante Spring Security y JSON Web Tokens (JWT).
 * **Documentación de API**: Documentación interactiva y automática de los endpoints con Swagger.
 
-## 🛠️ Tecnologías Utilizadas
 
-### Backend
-* Java 17
-* Spring Boot 3.5.0
-* Spring Web
-* Spring Data JPA
-* Spring Security
-* Maven
-* MySQL
-* JSON Web Tokens (JWT) para la autenticación
-* Lombok
-* Swagger (OpenAPI) para la documentación de la API
-
-### Frontend
-* React (para consumir los endpoints del backend)
 
 ## 🚀 Puesta en Marcha
 
@@ -47,11 +32,7 @@ El backend está construido con **Spring Boot** y sigue las mejores prácticas d
 
 
 
-# Sistema de Gestión para Atunes del Pacífico S.A.
 
-Este proyecto es un sistema de gestión integral (backend y frontend) desarrollado para la empresa "Atunes del Pacífico S.A.". La aplicación permite administrar las operaciones de la empresa, desde la producción y el control de inventario, hasta la gestión de clientes, pedidos, ventas y la generación de reportes clave.
-
-El backend está construido con **Spring Boot** y sigue las mejores prácticas de seguridad utilizando **Spring Security con JWT** para la autenticación y autorización basada en roles. El frontend es una aplicación moderna de **React** construida con Vite y estilizada con **MUI**.
 
 ## 📜 Índice
 
