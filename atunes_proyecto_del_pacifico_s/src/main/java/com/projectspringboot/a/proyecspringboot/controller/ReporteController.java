@@ -1,9 +1,6 @@
 package com.projectspringboot.a.proyecspringboot.controller;
 
-
-
-
-
+import com.projectspringboot.a.proyecspringboot.dto.ReporteInventarioDTO;
 import com.projectspringboot.a.proyecspringboot.dto.ReporteVentasPorClienteDTO;
 import com.projectspringboot.a.proyecspringboot.dto.ReporteVentasPorProductoDTO;
 import com.projectspringboot.a.proyecspringboot.service.ReporteService;
@@ -28,10 +25,15 @@ public class ReporteController {
         return ResponseEntity.ok(reporteService.getReporteVentasPorProducto());
     }
 
-
     @GetMapping("/ventas-por-cliente")
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<List<ReporteVentasPorClienteDTO>> getReporteVentasPorCliente() {
         return ResponseEntity.ok(reporteService.getReporteVentasPorCliente());
+    }
+
+    @GetMapping("/inventario")
+    @PreAuthorize("hasAuthority('ADMINISTRADOR')")
+    public ResponseEntity<List<ReporteInventarioDTO>> getReporteInventario() {
+        return ResponseEntity.ok(reporteService.getReporteInventario());
     }
 }
