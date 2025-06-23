@@ -51,7 +51,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return toDto(usuarioRepository.save(nuevoUsuario));
     }
 
-    // --- MÉTODO IMPLEMENTADO ---
+    // --- probando metodo ver6 ---
     @Override
     public UsuarioResponseDTO obtenerUsuarioPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
@@ -59,16 +59,16 @@ public class UsuarioServiceImpl implements UsuarioService {
         return toDto(usuario);
     }
 
-    // --- MÉTODO IMPLEMENTADO ---
+    // --- prueba de metodo ver7 ---
     @Override
     public List<UsuarioResponseDTO> obtenerTodos() {
         return usuarioRepository.findAll()
                 .stream()
-                .map(this::toDto) // Llama al método de mapeo para cada usuario
+                .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
-    // --- MÉTODO IMPLEMENTADO ---
+    // --- prueba exitosa ---
     @Override
     @Transactional
     public void cambiarEstado(Long id, boolean estado) {

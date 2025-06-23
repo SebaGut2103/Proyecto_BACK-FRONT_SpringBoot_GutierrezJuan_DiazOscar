@@ -25,7 +25,7 @@ public class JwtService {
     // Clave secreta fija. En producción, esto debería cargarse desde un archivo de propiedades.
     private static final String SECRET_KEY_STRING = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
-    // Creamos la clave como un campo final que se inicializa una sola vez.
+    
     private final Key signingKey;
 
     public JwtService() {
@@ -33,7 +33,7 @@ public class JwtService {
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // --- MÉTODOS PÚBLICOS ---
+    
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -52,14 +52,14 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    // --- MÉTODOS PRIVADOS ---
+    
 
     private String buildToken(Map<String, Object> extraClaims, String subject) {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 horas
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(this.signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -79,7 +79,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(this.signingKey) // Usamos la clave de firma consistente
+                .setSigningKey(this.signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

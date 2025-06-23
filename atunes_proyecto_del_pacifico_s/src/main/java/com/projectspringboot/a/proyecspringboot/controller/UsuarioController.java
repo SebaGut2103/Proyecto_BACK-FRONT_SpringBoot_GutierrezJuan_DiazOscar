@@ -21,10 +21,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    /**
-     * Endpoint para registrar un nuevo usuario.
-     * Solo accesible por administradores.
-     */
+    
     @PostMapping
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO usuarioRequest) {
@@ -32,30 +29,21 @@ public class UsuarioController {
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
-    /**
-     * Endpoint para obtener todos los usuarios.
-     * Solo accesible por administradores.
-     */
+    
     @GetMapping
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<List<UsuarioResponseDTO>> obtenerTodos() {
         return ResponseEntity.ok(usuarioService.obtenerTodos());
     }
 
-    /**
-     * Endpoint para obtener un usuario por su ID.
-     * Solo accesible por administradores.
-     */
+    
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> obtenerUsuarioPorId(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.obtenerUsuarioPorId(id));
     }
 
-    /**
-     * Endpoint para cambiar el estado (activo/inactivo) de un usuario.
-     * Solo accesible por administradores.
-     */
+    
     @PatchMapping("/{id}/estado")
     @PreAuthorize("hasAuthority('ADMINISTRADOR')")
     public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestParam boolean estado) {

@@ -11,5 +11,5 @@ public class ClienteRequestDTO {
     private String email;
     private String telefono;
     private String direccion;
-    private Long usuarioId; // para vincular a un usuario existente prueba funcionalidad
+    private Long usuarioId;
 }

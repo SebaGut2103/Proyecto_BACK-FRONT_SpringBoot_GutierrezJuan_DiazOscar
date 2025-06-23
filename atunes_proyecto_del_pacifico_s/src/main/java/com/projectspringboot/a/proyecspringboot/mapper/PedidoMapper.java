@@ -24,7 +24,7 @@ public class PedidoMapper {
             return null;
         }
 
-        // 1. Mapear la información del cliente
+        // 1. Mapear
         ClienteResponseDTO clienteDto = new ClienteResponseDTO();
         clienteDto.setId(pedido.getCliente().getId());
         clienteDto.setNombre(pedido.getCliente().getNombre());
@@ -32,15 +32,15 @@ public class PedidoMapper {
 
         // 2. Mapear la lista de detalles
         List<DetallePedidoResponseDTO> detallesDto = pedido.getDetalles().stream()
-                .map(PedidoMapper::detalleToDto) // Llama al método de ayuda para cada detalle
+                .map(PedidoMapper::detalleToDto)
                 .collect(Collectors.toList());
 
         // 3. Construir el DTO principal
         PedidoResponseDTO pedidoDto = new PedidoResponseDTO();
         pedidoDto.setId(pedido.getId());
-        pedidoDto.setFechaPedido(pedido.getFechaCreacion()); // Usamos fechaCreacion como fechaPedido
+        pedidoDto.setFechaPedido(pedido.getFechaCreacion());
         pedidoDto.setFechaEntrega(pedido.getFechaEntrega());
-        pedidoDto.setEstado(pedido.getEstado().name()); // .name() convierte el enum a String
+        pedidoDto.setEstado(pedido.getEstado().name());
         pedidoDto.setPrecioTotal(pedido.getPrecioTotal());
         pedidoDto.setCliente(clienteDto);
 
@@ -49,9 +49,7 @@ public class PedidoMapper {
         return pedidoDto;
     }
 
-    /**
-     * Método de ayuda para convertir una entidad DetallesPedido a su DTO.
-     */
+    
     private static DetallePedidoResponseDTO detalleToDto(DetallesPedido detalle) {
         DetallePedidoResponseDTO detalleDto = new DetallePedidoResponseDTO();
         detalleDto.setIdDetalle(detalle.getId());
@@ -60,7 +58,7 @@ public class PedidoMapper {
         detalleDto.setCantidad(detalle.getCantidad());
         detalleDto.setPrecioUnitario(detalle.getPrecioUnitario());
 
-        // Calculamos el subtotal
+        
         BigDecimal subtotal = detalle.getPrecioUnitario().multiply(new BigDecimal(detalle.getCantidad()));
         detalleDto.setSubtotal(subtotal);
 

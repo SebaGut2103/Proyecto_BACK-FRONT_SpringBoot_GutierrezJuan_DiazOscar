@@ -13,10 +13,10 @@ import java.util.Optional;
 
 @Repository
 public interface LoteProduccionRepository extends JpaRepository<LoteProduccion, Long> {
-    // Método para buscar un lote por su código único.
+    
     Optional<LoteProduccion> findByCodigoLote(String codigoLote);
 
-    // Método para buscar todos los lotes que tengan un estado específico.
+    
     List<LoteProduccion> findByEstado(EstadoLote estado);
 
     @Query("SELECT new com.projectspringboot.a.proyecspringboot.dto.ReporteInventarioDTO(l.estado, COUNT(l.id)) " +
