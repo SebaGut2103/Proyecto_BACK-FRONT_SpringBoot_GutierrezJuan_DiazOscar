@@ -1,23 +1,25 @@
-// Ubicación: src/pages/GestionInventarioPage.jsx
 import React, { useState, useEffect } from 'react';
 import loteService from '../services/loteService';
+import { 
+    Paper, Typography, Table, TableBody, TableCell, TableContainer, 
+    TableHead, TableRow, Button, Grid, TextField, Select, MenuItem, 
+    FormControl, InputLabel, Box, Chip 
+} from '@mui/material';
 
 function GestionInventarioPage() {
     const [lotes, setLotes] = useState([]);
     const [loading, setLoading] = useState(true);
     
-    // Estados para el formulario de nuevo lote
+    
     const [codigoLote, setCodigoLote] = useState('');
     const [fechaProduccion, setFechaProduccion] = useState('');
-    const [tipoProducto, setTipoProducto] = useState('AtunAceite'); // Valor por defecto
+    const [tipoProducto, setTipoProducto] = useState('AtunAceite');
     const [cantidadProducida, setCantidadProducida] = useState('');
 
     const fetchLotes = () => {
         setLoading(true);
         loteService.getInventario()
-            .then(response => {
-                setLotes(response.data);
-            })
+            .then(response => setLotes(response.data))
             .catch(error => console.error("Error al obtener inventario:", error))
             .finally(() => setLoading(false));
     };
@@ -31,7 +33,7 @@ function GestionInventarioPage() {
             loteService.marcarComoDefectuoso(id)
                 .then(() => {
                     alert('Lote marcado como defectuoso');
-                    fetchLotes(); 
+                    fetchLotes();
                 })
                 .catch(error => alert('Error al marcar el lote: ' + (error.response?.data || error.message)));
         }
@@ -39,17 +41,11 @@ function GestionInventarioPage() {
     
     const handleRegistrarLote = (e) => {
         e.preventDefault();
-        const nuevoLote = {
-            codigoLote,
-            fechaProduccion,
-            tipoProducto,
-            cantidadProducida: parseInt(cantidadProducida, 10)
-        };
+        const nuevoLote = { codigoLote, fechaProduccion, tipoProducto, cantidadProducida: parseInt(cantidadProducida, 10) };
         
         loteService.registrarLote(nuevoLote)
             .then(() => {
                 alert('Nuevo lote registrado exitosamente.');
-                
                 setCodigoLote('');
                 setFechaProduccion('');
                 setCantidadProducida('');
@@ -58,63 +54,74 @@ function GestionInventarioPage() {
             .catch(error => alert('Error al registrar el lote: ' + (error.response?.data || error.message)));
     };
 
-    if (loading) return <p>Cargando inventario...</p>;
+    if (loading) return <Typography sx={{ p: 2 }}>Cargando inventario...</Typography>;
 
     return (
-        <div>
-            <h2>Gestión de Inventario</h2>
-            
-            {/* Formulario para registrar nuevos lotes */}
-            <div style={{ border: '1px solid #000', padding: '1rem', marginBottom: '2rem' }}>
-                <h3>Registrar Nuevo Lote</h3>
-                <form onSubmit={handleRegistrarLote}>
-                    <input type="text" placeholder="Código del Lote" value={codigoLote} onChange={e => setCodigoLote(e.target.value)} required />
-                    <input type="date" value={fechaProduccion} onChange={e => setFechaProduccion(e.target.value)} required />
-                    <select value={tipoProducto} onChange={e => setTipoProducto(e.target.value)} required>
-                        <option value="AtunAceite">Atún en Aceite</option>
-                        <option value="AtunAgua">Atún en Agua</option>
-                        <option value="AtunSalsa">Atún en Salsa</option>
-                    </select>
-                    <input type="number" placeholder="Cantidad Producida" value={cantidadProducida} onChange={e => setCantidadProducida(e.target.value)} required min="1" />
-                    <button type="submit">Registrar</button>
-                </form>
-            </div>
+        <Grid container spacing={3}>
+            {/* Formulario de Registro */}
+            <Grid item xs={12}>
+                <Paper sx={{ p: 2 }}>
+                    <Typography variant="h5" gutterBottom>Registrar Nuevo Lote</Typography>
+                    <Box component="form" onSubmit={handleRegistrarLote} sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                        <TextField label="Código del Lote" value={codigoLote} onChange={e => setCodigoLote(e.target.value)} required />
+                        <TextField type="date" value={fechaProduccion} onChange={e => setFechaProduccion(e.target.value)} required InputLabelProps={{ shrink: true }} label="Fecha de Producción" />
+                        <FormControl sx={{ minWidth: 150 }}>
+                            <InputLabel>Tipo de Producto</InputLabel>
+                            <Select value={tipoProducto} label="Tipo de Producto" onChange={e => setTipoProducto(e.target.value)} required>
+                                <MenuItem value="AtunAceite">Atún en Aceite</MenuItem>
+                                <MenuItem value="AtunAgua">Atún en Agua</MenuItem>
+                                <MenuItem value="AtunSalsa">Atún en Salsa</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <TextField label="Cantidad Producida" type="number" value={cantidadProducida} onChange={e => setCantidadProducida(e.target.value)} required />
+                        <Button type="submit" variant="contained">Registrar</Button>
+                    </Box>
+                </Paper>
+            </Grid>
 
-            {/* Tabla de inventario */}
-            <h3>Inventario Actual</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Código Lote</th>
-                        <th>Tipo</th>
-                        <th>Producido</th>
-                        <th>Disponible</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {lotes.map(lote => (
-                        <tr key={lote.id}>
-                            <td>{lote.codigoLote}</td>
-                            <td>{lote.tipoProducto}</td>
-                            <td>{lote.cantidadProducida}</td>
-                            <td>{lote.cantidadDisponible}</td>
-                            <td style={{ fontWeight: 'bold', color: lote.estado === 'Defectuoso' ? 'red' : 'green' }}>
-                                {lote.estado}
-                            </td>
-                            <td>
-                                {lote.estado === 'Disponible' && (
-                                    <button onClick={() => handleMarcarDefectuoso(lote.id)}>
-                                        Marcar como Defectuoso
-                                    </button>
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+            {/* Tabla de Inventario */}
+            <Grid item xs={12}>
+                <TableContainer component={Paper}>
+                    <Typography variant="h5" sx={{ p: 2 }}>Inventario Actual</Typography>
+                    <Table>
+                        <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+                            <TableRow>
+                                <TableCell>Código Lote</TableCell>
+                                <TableCell>Tipo</TableCell>
+                                <TableCell>Producido</TableCell>
+                                <TableCell>Disponible</TableCell>
+                                <TableCell>Estado</TableCell>
+                                <TableCell>Acciones</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {lotes.map(lote => (
+                                <TableRow key={lote.id}>
+                                    <TableCell>{lote.codigoLote}</TableCell>
+                                    <TableCell>{lote.tipoProducto}</TableCell>
+                                    <TableCell>{lote.cantidadProducida}</TableCell>
+                                    <TableCell>{lote.cantidadDisponible}</TableCell>
+                                    <TableCell>
+                                        <Chip 
+                                            label={lote.estado}
+                                            color={lote.estado === 'Disponible' ? 'success' : lote.estado === 'Vendido' ? 'default' : 'error'}
+                                            size="small"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {lote.estado === 'Disponible' && (
+                                            <Button variant="outlined" color="error" size="small" onClick={() => handleMarcarDefectuoso(lote.id)}>
+                                                Marcar Defectuoso
+                                            </Button>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+        </Grid>
     );
 }
 

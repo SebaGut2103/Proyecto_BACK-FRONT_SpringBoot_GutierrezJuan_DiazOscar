@@ -1,7 +1,16 @@
-// Ubicación: src/components/MainLayout.jsx
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+
+const NavButton = ({ to, children }) => {
+    const navigate = useNavigate();
+    return (
+        <Button color="inherit" onClick={() => navigate(to)}>
+            {children}
+        </Button>
+    );
+};
 
 const MainLayout = ({ children }) => {
     const { user, logout } = useAuth();
@@ -9,80 +18,36 @@ const MainLayout = ({ children }) => {
 
     const handleLogout = () => {
         logout();
-        navigate('/login'); // Redirige al login después de cerrar sesión
+        navigate('/login');
     };
 
     return (
-        <div>
-            <nav style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                padding: '1rem', 
-                background: '#004481', // Un color corporativo
-                color: 'white'
-            }}>
-                <div>
-                    {/* Enlace al Dashboard principal, visible para todos los usuarios logueados */}
-                    <Link to="/dashboard" style={{ marginRight: '1rem', color: 'white', textDecoration: 'none' }}>
-                        Dashboard Principal
-                    </Link>
-                    
-                    {/* --- ENLACES ESPECÍFICOS POR ROL --- */}
-                    
-                    {/* Enlaces para el rol de CLIENTE */}
-                    {user?.rol === 'CLIENTE' && (
-                        <>
-                            <Link to="/crear-pedido" style={{ marginRight: '1rem', color: 'white', textDecoration: 'none' }}>
-                                Crear Pedido
-                            </Link>
-                            <Link to="/historial-compras" style={{ marginRight: '1rem', color: 'white', textDecoration: 'none' }}>
-                                Mi Historial
-                            </Link>
-                        </>
-                    )}
+        <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        Atunes del Pacífico
+                    </Typography>
 
-                    {/* Enlaces para el rol de OPERADOR (y también para el ADMIN) */}
-                    {(user?.rol === 'OPERADOR' || user?.rol === 'ADMINISTRADOR') && (
-                        <Link to="/inventario" style={{ marginRight: '1rem', color: 'white', textDecoration: 'none' }}>
-                            Gestionar Inventario
-                        </Link>
-                    )}
+                    {/* Enlaces de navegación */}
+                    {user?.rol === 'CLIENTE' && <>
+                        <NavButton to="/crear-pedido">Crear Pedido</NavButton>
+                        <NavButton to="/historial-compras">Mi Historial</NavButton>
+                    </>}
+                    {(user?.rol === 'OPERADOR' || user?.rol === 'ADMINISTRADOR') && 
+                        <NavButton to="/inventario">Inventario</NavButton>}
+                    {user?.rol === 'ADMINISTRADOR' && <>
+                        <NavButton to="/admin/usuarios">Usuarios</NavButton>
+                        <NavButton to="/reportes">Reportes</NavButton>
+                    </>}
 
-                    {/* Enlaces solo para el rol de ADMINISTRADOR */}
-                     {user?.rol === 'ADMINISTRADOR' && (
-                        <>
-                            <Link to="/admin/usuarios" style={{ marginRight: '1rem', color: 'white', textDecoration: 'none' }}>
-                                Gestionar Usuarios
-                            </Link>
-                            <Link to="/reportes" style={{ marginRight: '1rem', color: 'white', textDecoration: 'none' }}>
-                                Reportes
-                            </Link>
-                        </>
-                    )}
-                </div>
-                <div>
-                    <span>Bienvenido, {user?.nombreUsuario}</span>
-                    <button 
-                        onClick={handleLogout} 
-                        style={{ 
-                            marginLeft: '1rem', 
-                            background: '#ff4d4d', 
-                            color: 'white', 
-                            border: 'none', 
-                            padding: '8px 12px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Cerrar Sesión
-                    </button>
-                </div>
-            </nav>
-            <main style={{ padding: '1.5rem' }}>
+                    <Button color="inherit" onClick={handleLogout}>Cerrar Sesión</Button>
+                </Toolbar>
+            </AppBar>
+            <Box component="main" sx={{ p: 3 }}>
                 {children}
-            </main>
-        </div>
+            </Box>
+        </Box>
     );
 };
 
