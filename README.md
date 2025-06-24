@@ -198,6 +198,8 @@ Una vez que el backend esté en ejecución, puedes acceder a la documentación i
 
 select * from rol;
 
+### Roles
+
 -- Insertar los roles del sistema
 INSERT INTO `rol` (`id`, `nombre`) VALUES
 (1, 'ROLE_ADMINISTRADOR'),
@@ -205,26 +207,30 @@ INSERT INTO `rol` (`id`, `nombre`) VALUES
 (3, 'ROLE_CLIENTE');
 
 
--- actualiza aqui 
+### Actualización de Roles
 
+-- actualiza aqui 
 UPDATE rol SET nombre = 'ADMINISTRADOR' WHERE id = 1;
 UPDATE rol SET nombre = 'OPERADOR' WHERE id = 2;
 UPDATE rol SET nombre = 'CLIENTE' WHERE id = 3;
 
 
+### Insert de Clientes
 
 INSERT INTO `clientes` (`id`, `nombre`, `ruc`, `email`, `telefono`, `direccion`, `estado`, `usuario_id`) VALUES
 (1, 'Distribuidora XYZ', '20601234567', 'compras@distribuidoraxyz.com', '987654321', 'Av. Principal 123, Lima', 'Activo', 3);
+
+
+### Actualización Contraseñas Por si hay problemas
 
 UPDATE usuario 
 SET contrasena = '$2a$10$wTtqpixryPHf7A36WNRzdO5Dr.5aho/SNTylNRE5Z4qVk.rSTncJ.' 
 WHERE nombre_usuario = 'operador1' OR nombre_usuario = 'distribuidora_xyz';
 
 
-select * from usuario u ;
-
-SELECT * FROM rol;
-
+### Insert Usuario
+## Importante Contraseña Estandar 
+#### Si presenta algun problema Actualizar
 
 -- Insertar los usuarios de prueba con la contraseña encriptada
 INSERT INTO `usuario` (`id`, `nombre_usuario`, `email`, `contrasena`, `rol_id`, `esta_activo`) VALUES
@@ -232,6 +238,9 @@ INSERT INTO `usuario` (`id`, `nombre_usuario`, `email`, `contrasena`, `rol_id`, 
 (2, 'operador1', 'operador1@atunes.com', '$2a$10$GiseSuhL2s32I4KA5T5iBuIign22inyyQLs0i2sD6g/4NK2k9CqEW', 2, 1),
 (3, 'distribuidora_xyz', 'compras@distribuidoraxyz.com', '$2a$10$GiseSuhL2s32I4KA5T5iBuIign22inyyQLs0i2sD6g/4NK2k9CqEW', 3, 1);
 
+
+### Actualización si hay problemas de credenciales 
+##### Se actualiza Rol admin, cliente y Operador
 -- Actualiza aqui
 UPDATE usuario 
 SET contrasena = '$2a$10$wTtqpixryPHf7A36WNRzdO5Dr.5aho/SNTylNRE5Z4qVk.rSTncJ.' 
