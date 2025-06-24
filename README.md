@@ -191,12 +191,6 @@ Una vez que el backend esté en ejecución, puedes acceder a la documentación i
 
 
 ## informacion adicional Base de Datos Insert en LOCAL
- use atunes_pacifico;
-
-
- SELECT * FROM usuario WHERE nombre_usuario = 'admin';
-
-select * from rol;
 
 ### Roles
 
@@ -228,11 +222,12 @@ SET contrasena = '$2a$10$wTtqpixryPHf7A36WNRzdO5Dr.5aho/SNTylNRE5Z4qVk.rSTncJ.'
 WHERE nombre_usuario = 'operador1' OR nombre_usuario = 'distribuidora_xyz';
 
 
-### Insert Usuario
+
 ## Importante Contraseña Estandar 
 #### Si presenta algun problema Actualizar
 
 -- Insertar los usuarios de prueba con la contraseña encriptada
+### Insert Usuario
 INSERT INTO `usuario` (`id`, `nombre_usuario`, `email`, `contrasena`, `rol_id`, `esta_activo`) VALUES
 (1, 'admin', 'admin@atunes.com', '$2a$10$GiseSuhL2s32I4KA5T5iBuIign22inyyQLs0i2sD6g/4NK2k9CqEW', 1, 1),
 (2, 'operador1', 'operador1@atunes.com', '$2a$10$GiseSuhL2s32I4KA5T5iBuIign22inyyQLs0i2sD6g/4NK2k9CqEW', 2, 1),
@@ -242,6 +237,7 @@ INSERT INTO `usuario` (`id`, `nombre_usuario`, `email`, `contrasena`, `rol_id`, 
 ### Actualización si hay problemas de credenciales 
 ##### Se actualiza Rol admin, cliente y Operador
 -- Actualiza aqui
+### Actualización si hay problemas de credenciales 
 UPDATE usuario 
 SET contrasena = '$2a$10$wTtqpixryPHf7A36WNRzdO5Dr.5aho/SNTylNRE5Z4qVk.rSTncJ.' 
 WHERE nombre_usuario = 'admin';
